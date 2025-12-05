@@ -1,0 +1,34 @@
+@using Microsoft.AspNetCore.Identity
+@using OZ_SporSalonu.Models 
+
+@* Sisteme giriş (SignIn) ve kullanıcı (User) yöneticilerini çağırıyoruz *@
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    @* KULLANICI GİRİŞ YAPMIŞSA *@
+    <li class="nav-item">
+        @* Giriş yapan kullanıcının adını göstermek için /Identity/Account/Manage sayfasına link ver *@
+<a class="btn btn-outline-primary rounded-pill px-3 me-2" asp-area="Identity" asp-page="/Account/Manage/Index" title="Profilim">
+    <i class="bi bi-person-circle me-1"></i> @UserManager.GetUserName(User)
+</a>    </li>
+    <li class="nav-item">
+        @* Çıkış Yap butonu bir form içinde olmalıdır *@
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="nav-link btn btn-link text-dark">Çıkış Yap</button>
+        </form>
+    </li>
+}
+else
+{
+    @* KULLANICI GİRİŞ YAPMAMIŞSA *@
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Kayıt Ol</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Giriş Yap</a>
+    </li>
+}
+</ul>

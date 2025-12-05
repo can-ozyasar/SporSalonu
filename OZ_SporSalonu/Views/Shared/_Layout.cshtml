@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OZ_SporSalonu</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/OZ_SporSalonu.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 sticky-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OZ_SporSalonu</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+               @* === GÜNCELLENECEK KISIM === *@
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                    </li>
+                    
+
+                    @* === YENİ LİNKLER BAŞLANGIÇ === *@
+
+                    @* Kullanıcının giriş yapıp yapmadığını kontrol et *@
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @* EĞER ROL "Admin" İSE *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+            <a class="nav-link text-danger" asp-area="" asp-controller="Antrenor" asp-action="Index">Antrenör Yönetimi</a>
+        </li>
+
+
+        <li class="nav-item">
+        <a class="nav-link text-danger fw-bold" asp-controller="Admin" asp-action="Randevular">
+            <i class="bi bi-list-task"></i> Randevu Talepleri
+        </a>
+    </li>
+        
+        @* === YENİ EKLENEN LİNK === *@
+        <li class="nav-item">
+            <a class="nav-link text-danger" asp-area="" asp-controller="Hizmet" asp-action="Index">Hizmet Yönetimi</a>
+        </li>
+        @if (User.IsInRole("Admin"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-primary" asp-controller="Salon" asp-action="Index">
+            <i class="bi bi-building"></i> Salon Yönetimi
+        </a>
+    </li>
+}
+                            @* (Admin için başka linkler buraya eklenebilir) *@
+                        }
+
+                        @* EĞER ROL "Uye" İSE *@
+                        @if (User.IsInRole("Uye"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-success" asp-area="" asp-controller="Randevu" asp-action="Index">Randevularım</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-success" asp-area="" asp-controller="YapayZeka" asp-action="OneriAl">Yapay Zekâ Önerisi</a>
+                            </li>
+                        }
+                    }
+                    @* === YENİ LİNKLER BİTİŞ === *@
+                </ul>
+
+                @* "Giriş Yap" / "Kayıt Ol" / "Çıkış Yap" linkleri için
+                    Bu dosya, Identity UI ile otomatik olarak gelir.
+                *@
+                <partial name="_LoginPartial" />
+
+            </div>
+            @* === GÜNCELLENECEK KISIM BİTİŞ === *@
+
+        </div>
+    </nav>
+</header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+<footer class="bg-dark text-white pt-5 pb-4 mt-auto">
+    <div class="container text-center text-md-start">
+        <div class="row text-center text-md-start">
+            
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-primary">
+                    <i class="bi bi-activity"></i> OZ Spor Salonu
+                </h5>
+                <p>
+                    Sınırlarını zorla, potansiyelini keşfet. En modern ekipmanlar ve uzman kadromuzla hedeflerine ulaşman için yanındayız.
+                </p>
+            </div>
+
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-warning">Menü</h5>
+                <p>
+                    <a asp-controller="Home" asp-action="Index" class="text-white text-decoration-none">Ana Sayfa</a>
+                </p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <p>
+                        <a asp-controller="YapayZeka" asp-action="OneriAl" class="text-white text-decoration-none">AI Koç</a>
+                    </p>
+                    <p>
+                        <a asp-controller="Randevu" asp-action="Al" class="text-white text-decoration-none">Randevu Al</a>
+                    </p>
+                }
+                else 
+                {
+                    <p>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="text-white text-decoration-none">Kayıt Ol</a>
+                    </p>
+                }
+            </div>
+
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-warning">İletişim</h5>
+                <p>
+                    <i class="bi bi-geo-alt me-2"></i> Sakarya Üniversitesi, Serdivan
+                </p>
+                <p>
+                    <i class="bi bi-envelope me-2"></i> info@ozsporsalonu.com
+                </p>
+                <p>
+                    <i class="bi bi-phone me-2"></i> +90 555 123 45 67
+                </p>
+            </div>
+            
+        </div>
+
+        <hr class="mb-4">
+
+        <div class="row align-items-center">
+            <div class="col-md-7 col-lg-8">
+                <p>
+                    © @DateTime.Now.Year <strong>OZ Spor Salonu</strong>. Tüm hakları saklıdır.
+                </p>
+            </div>
+            
+            <div class="col-md-5 col-lg-4">
+                <div class="text-center text-md-end">
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i class="bi bi-twitter"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i class="bi bi-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+   
+</body>
+ 
+</html>
