@@ -1,0 +1,12 @@
+admin: muhammed.ozyasar@ogr.sakarya.edu.tr
+
+kullanıcı1: ozge@ogr.sakarya.edu.tr
+kullanıcı2: mustafa@ogr.sakarya.edu.tr
+kullanıcı3: emre@ogr.sakarya.edu.tr
+kullanıcı4: sena@ogr.sakarya.edu.tr
+
+
+
+
+
+şifre: Aa1.123
