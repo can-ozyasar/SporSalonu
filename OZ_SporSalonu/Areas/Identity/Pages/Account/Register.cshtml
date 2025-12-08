@@ -1,0 +1,94 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-xl-10">
+            <div class="card rounded-3 text-black shadow-lg border-0 overflow-hidden">
+                <div class="row g-0">
+                    
+                    <div class="col-lg-6 d-none d-lg-block" 
+                         style="background-image: url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'); 
+                                background-size: cover; background-position: center;">
+                        <div class="d-flex flex-column justify-content-center h-100 p-5 text-white" style="background: rgba(0,0,0,0.5);">
+                            <h2 class="display-5 fw-bold">Aramıza Katıl!</h2>
+                            <p class="lead">En iyi versiyonunu yaratmaya bugün başla. Ücretsiz üye ol.</p>
+                            <ul class="list-unstyled mt-3">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Uzman Antrenörler</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> AI Destekli Programlar</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Kolay Randevu Sistemi</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card-body p-md-5 mx-md-4">
+
+                            <div class="text-center mb-4">
+                                <h3 class="mt-1 mb-2 pb-1 fw-bold text-primary">Üye Kayıt Formu</h3>
+                                <p class="text-muted">Bilgilerini gir ve harekete geç.</p>
+                            </div>
+
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Input.Ad" class="form-control" autocomplete="given-name" placeholder="Ad" />
+                                            <label asp-for="Input.Ad"><i class="bi bi-person"></i> Ad</label>
+                                            <span asp-validation-for="Input.Ad" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Input.Soyad" class="form-control" autocomplete="family-name" placeholder="Soyad" />
+                                            <label asp-for="Input.Soyad"><i class="bi bi-person"></i> Soyad</label>
+                                            <span asp-validation-for="Input.Soyad" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
+                                    <label asp-for="Input.Email"><i class="bi bi-envelope"></i> Email</label>
+                                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="password" />
+                                    <label asp-for="Input.Password"><i class="bi bi-lock"></i> Şifre</label>
+                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                                </div>
+                                
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="password" />
+                                    <label asp-for="Input.ConfirmPassword"><i class="bi bi-lock-fill"></i> Şifre Tekrar</label>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                                </div>
+
+                                <div class="d-grid gap-2 mb-4">
+                                    <button id="registerSubmit" type="submit" class="btn btn-success btn-lg py-3 fw-bold">Kayıt Ol</button>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-center pb-4">
+                                    <p class="mb-0 me-2">Zaten üye misin?</p>
+                                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-primary">Giriş Yap</a>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
