@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic; // ICollection için gerekli
+using System.Collections.Generic; 
 
 namespace OZ_SporSalonu.Models
 {

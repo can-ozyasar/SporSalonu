@@ -1,108 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+:root {
+    --primary-color: #0f172a;   
+    --accent-color: #10b981;    
+    --accent-hover: #059669;
+    --bg-light: #f8fafc;        
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #f8f9fa; /* Çok açık gri arka plan */
-  color: #2c3e50;
-  display: flex;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Viewport Height: Ekran yüksekliğinin %100'ü */
+    min-height: 100vh;
+    padding-top: 80px; 
 }
 
-
-a, .btn {
-  transition: all 0.3s ease;
-}
-
-
-.card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-
-.btn-primary {
-    background: linear-gradient(45deg, #0d6efd, #0099ff);
-    border: none;
-    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(45deg, #0056b3, #007bff);
-    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.4);
-}
-
-.navbar-custom {
-    background: #212529; /* Koyu Arka Plan */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.navbar-custom .nav-link {
-    color: rgba(255,255,255,0.8) !important;
-    font-weight: 500;
-}
-
-.navbar-custom .nav-link:hover {
-    color: #ffffff !important;
-    transform: scale(1.05);
+/* navbar   */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px); 
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 0;
 }
 
 .navbar-brand {
     font-weight: 700;
-    letter-spacing: 1px;
-    color: #fff !important;
+    letter-spacing: -0.5px;
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
 }
 
-
-main {
-    animation: fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Form Inputları Odaklanma Efekti */
-.form-control:focus, .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-    transform: translateY(-2px);
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    margin-left: 10px;
+    padding: 8px 16px !important;
+    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
-
-
-
-
-
-/* 2. Ana içerik alanının kalan boşluğu doldurmasını sağla */
-/* _Layout.cshtml dosyanızdaki yapıya göre genellikle 'main' veya '.container' hedef alınır */
-body > .container, 
-main {
-    flex: 1; 
+.nav-link:hover, .nav-link.active {
+    color: var(--accent-color) !important;
+    background-color: rgba(16, 185, 129, 0.05);
 }
 
-/* 3. Footer'ın büzüşmesini engelle */
+/*buton*/
+.btn {
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
+}
+
+.btn-primary:hover {
+    background-color: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+.btn-accent:hover {
+    background-color: var(--accent-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+/*kartlar*/
+.card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    width: 60px; 
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+}
+
+/* footer için  */
 footer {
-    flex-shrink: 0;
+    background-color: white;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;
+    color: var(--text-muted);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+main {
+    flex: 1;
+}
+
+@media (max-width: 991.98px) {
+    
+    /* Açılan menü kutusu */
+    .navbar-collapse {
+        background-color: #ffffff; 
+        padding: 1.5rem;
+        border-radius: 1rem; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+        margin-top: 15px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 10px 15px !important;
+        border-radius: 8px;
+        margin-left: 0 !important;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+    .navbar-nav .nav-link:hover, 
+    .navbar-nav .nav-link.active {
+        background-color: rgba(16, 185, 129, 0.1); 
+        color: var(--accent-color) !important;
+        padding-left: 20px !important; 
+    }
+
+    .dropdown-menu {
+        border: none;
+        box-shadow: none;
+        padding-left: 1rem;
+        background-color: #f8fafc; 
+    }
 }
