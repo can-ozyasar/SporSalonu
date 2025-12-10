@@ -20,7 +20,7 @@ namespace OZ_SporSalonu.Controllers
             _context = context;
         }
 
-// AntrenorController.cs > Index Metodu
+
 public async Task<IActionResult> Index()
 {
     var antrenorler = await _context.Antrenorler
@@ -35,6 +35,7 @@ public async Task<IActionResult> Index()
         UzmanlikAlani = a.UzmanlikAlani,
         SalonId = a.SalonId,
         SalonAdi = a.Salon != null ? a.Salon.Ad : "Şube Atanmamış",
+
         // Günleri Türkçeleştirerek listeye ekliyoruz
         MusaitlikOzetleri = a.Musaitlikler
             .OrderBy(m => m.Gun)
@@ -45,7 +46,8 @@ public async Task<IActionResult> Index()
     return View(viewModel);
 }
 
-// Controller içine küçük bir yardımcı metot (Index için)
+
+
 private string GunTurkce(DayOfWeek gun)
 {
     return gun switch {
@@ -60,26 +62,28 @@ private string GunTurkce(DayOfWeek gun)
     };
 }
 
-     // GET: Antrenor/Create
+
+
 public async Task<IActionResult> Create()
 {
-    // Uzmanlık için Hizmet Listesi
+    
     ViewBag.HizmetListesi = new SelectList(await _context.Hizmetler.ToListAsync(), "Ad", "Ad");
     
-    // Salon Listesi 
     ViewBag.SalonListesi = new SelectList(await _context.Salonlar.ToListAsync(), "Id", "Ad");
     
     return View();
 }
 
-// POST: Antrenor/Create
+
+
+
 [HttpPost]
 [ValidateAntiForgeryToken]
 public async Task<IActionResult> Create(AntrenorViewModel viewModel)
 {
     if (ModelState.IsValid)
     {
-        // 1. Önce Antrenörü oluştur ve kaydet
+        
         var antrenor = new Antrenor
         {
             AdSoyad = viewModel.AdSoyad,
@@ -90,33 +94,33 @@ public async Task<IActionResult> Create(AntrenorViewModel viewModel)
         _context.Add(antrenor);
         await _context.SaveChangesAsync(); // Burada veritabanı antrenöre bir ID atar
 
-        // 2. Seçilen uzmanlık alanına karşılık gelen Hizmet'i bul
-        // (Dropdown'dan bize Hizmetin ADI geliyor)
+        // Seçilen uzmanlık alanına karşılık gelen Hizmet'i bul
+        
         var secilenHizmet = await _context.Hizmetler
             .FirstOrDefaultAsync(h => h.Ad == viewModel.UzmanlikAlani);
 
-        // 3. Eğer hizmet bulunduysa, ilişki tablosuna (AntrenorHizmet) ekle
+        // Eğer hizmet bulunduysa, ilişki tablosuna (AntrenorHizmet) ekle
         if (secilenHizmet != null)
         {
             var yeniIliski = new AntrenorHizmet
             {
-                AntrenorId = antrenor.Id, // Yeni oluşan ID
+                AntrenorId = antrenor.Id, 
                 HizmetId = secilenHizmet.Id
             };
             _context.Add(yeniIliski);
-            await _context.SaveChangesAsync(); // İlişkiyi kaydet
+            await _context.SaveChangesAsync(); 
         }
 
         return RedirectToAction(nameof(Index));
     }
     
-    // Hata varsa listeleri tekrar doldur
+    // Hata varsa listeleri tekrar dolduralım
     ViewBag.HizmetListesi = new SelectList(await _context.Hizmetler.ToListAsync(), "Ad", "Ad");
     ViewBag.SalonListesi = new SelectList(await _context.Salonlar.ToListAsync(), "Id", "Ad");
     return View(viewModel);
 }
 
-        // GET: Antrenor/Edit/5
+
 public async Task<IActionResult> Edit(int? id)
 {
     if (id == null) return NotFound();
@@ -130,14 +134,14 @@ public async Task<IActionResult> Edit(int? id)
         AdSoyad = antrenor.AdSoyad,
         UzmanlikAlani = antrenor.UzmanlikAlani,
         
-        //  Veritabanındaki SalonId'yi ViewModel'e aktar 
+        
         SalonId = antrenor.SalonId 
     };
 
-    // Dropdown listelerini hazırla
+   
     ViewBag.HizmetListesi = new SelectList(await _context.Hizmetler.ToListAsync(), "Ad", "Ad");
     
-    // Salon Listesini ViewBag'e ekle 
+    
     ViewBag.SalonListesi = new SelectList(await _context.Salonlar.ToListAsync(), "Id", "Ad", antrenor.SalonId);
 
     return View(viewModel);
@@ -145,9 +149,33 @@ public async Task<IActionResult> Edit(int? id)
 
 
 
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> MusaitlikSil(int id)
+{
+    // Silinecek kaydı bul
+    var musaitlik = await _context.AntrenorMusaitlikleri.FindAsync(id);
+    
+    if (musaitlik != null)
+    {
+        // Silmeden önce Antrenör ID'sini sakla (Geri dönüş için lazım)
+        int antrenorId = musaitlik.AntrenorId;
+        
+        // Sil ve Kaydet
+        _context.AntrenorMusaitlikleri.Remove(musaitlik);
+        await _context.SaveChangesAsync();
+        
+        TempData["SuccessMessage"] = "Çalışma saati silindi.";
+        
+        // Yine aynı sayfaya geri dön
+        return RedirectToAction("MusaitlikEkle", new { id = antrenorId });
+    }
+    
+    // Kayıt bulunamazsa listeye dön
+    return RedirectToAction(nameof(Index));
+}
 
 
-        // POST: Antrenor/Edit/5
 [HttpPost]
 [ValidateAntiForgeryToken]
 public async Task<IActionResult> Edit(int id, AntrenorViewModel viewModel)
@@ -193,7 +221,7 @@ public async Task<IActionResult> Edit(int id, AntrenorViewModel viewModel)
 
         
         
-        // GET: Antrenor/Delete/5
+      
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -212,7 +240,8 @@ public async Task<IActionResult> Edit(int id, AntrenorViewModel viewModel)
             return View(viewModel);
         }
 
-        // POST: Antrenor/Delete/5
+        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -228,7 +257,8 @@ public async Task<IActionResult> Edit(int id, AntrenorViewModel viewModel)
         }
         
         
-        // GET: Antrenor/HizmetAta/5
+        
+
         public async Task<IActionResult> HizmetAta(int? id)
         {
             if (id == null) return NotFound();
@@ -256,7 +286,9 @@ public async Task<IActionResult> Edit(int id, AntrenorViewModel viewModel)
             return View(model);
         }
 
-        // POST: Antrenor/HizmetAta
+       
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> HizmetAta(AntrenorHizmetAtaViewModel model)
@@ -285,7 +317,9 @@ public async Task<IActionResult> Edit(int id, AntrenorViewModel viewModel)
 
 
 
-// GET: Antrenor/MusaitlikEkle/5
+
+
+
 public async Task<IActionResult> MusaitlikEkle(int id)
 {
     var antrenor = await _context.Antrenorler
@@ -310,7 +344,7 @@ public async Task<IActionResult> MusaitlikEkle(int id)
         AntrenorAd = antrenor.AdSoyad,
         MevcutMusaitlikler = antrenor.Musaitlikler.OrderBy(m => m.Gun).ToList(),
         
-        // === GÜN LİSTESİNİ HAZIRLA ===
+        
         Gunler = new List<GunSecimItem>
         {
             new GunSecimItem { GunDegeri = DayOfWeek.Monday, GunAdi = "Pazartesi" },
@@ -326,21 +360,23 @@ public async Task<IActionResult> MusaitlikEkle(int id)
     return View(model);
 }
 
-// POST: Antrenor/MusaitlikEkle
+
 [HttpPost]
 [ValidateAntiForgeryToken]
 public async Task<IActionResult> MusaitlikEkle(MusaitlikEkleViewModel model)
 {
-    // 1. En az 1 gün seçilmiş mi kontrolü
+    //  Antrenörü Çek
+    var antrenor = await _context.Antrenorler.Include(a => a.Salon).FirstOrDefaultAsync(a => a.Id == model.AntrenorId);
+    if (antrenor == null) return NotFound();
+
+    // Gün Seçimi Kontrolü
     if (!model.Gunler.Any(g => g.SeciliMi))
     {
         ModelState.AddModelError("", "Lütfen en az bir gün seçiniz.");
     }
 
-    // 2. Salon ve Saat Kontrolleri
-    var antrenor = await _context.Antrenorler.Include(a => a.Salon).FirstOrDefaultAsync(a => a.Id == model.AntrenorId);
-    
-    if (antrenor?.Salon != null)
+    //  Salon Saat Kontrolü
+    if (antrenor.Salon != null)
     {
         if (model.Baslangic < antrenor.Salon.AcilisSaati) ModelState.AddModelError("Baslangic", "Başlangıç saati salon açılışından önce olamaz.");
         if (model.Bitis > antrenor.Salon.KapanisSaati) ModelState.AddModelError("Bitis", "Bitiş saati salon kapanışından sonra olamaz.");
@@ -353,14 +389,31 @@ public async Task<IActionResult> MusaitlikEkle(MusaitlikEkleViewModel model)
 
     if (ModelState.IsValid)
     {
-        // === ÇOKLU KAYIT DÖNGÜSÜ ===
-        // Seçili olan her gün için bir kayıt oluştur
+        foreach (var gunItem in model.Gunler.Where(g => g.SeciliMi))
+        {
+            // Veritabanında bu hocanın, bu gün, bu saatler arasında kaydı var mı?
+            
+            bool cakismaVar = await _context.AntrenorMusaitlikleri.AnyAsync(m =>
+                m.AntrenorId == model.AntrenorId &&
+                m.Gun == gunItem.GunDegeri &&
+                (model.Baslangic < m.BitisSaati && model.Bitis > m.BaslangicSaati)
+            );
+
+            if (cakismaVar)
+            {
+                ModelState.AddModelError("", $"{gunItem.GunAdi} günü için {model.Baslangic:hh\\:mm}-{model.Bitis:hh\\:mm} aralığında zaten bir kayıt veya çakışma var.");
+            }
+        }
+    }
+
+    if (ModelState.IsValid)
+    {
         foreach (var gunItem in model.Gunler.Where(g => g.SeciliMi))
         {
             var musaitlik = new AntrenorMusaitlik
             {
                 AntrenorId = model.AntrenorId,
-                Gun = gunItem.GunDegeri, // Listeden gelen gün değeri
+                Gun = gunItem.GunDegeri,
                 BaslangicSaati = model.Baslangic,
                 BitisSaati = model.Bitis
             };
@@ -368,21 +421,17 @@ public async Task<IActionResult> MusaitlikEkle(MusaitlikEkleViewModel model)
         }
 
         await _context.SaveChangesAsync();
-        
-        TempData["SuccessMessage"] = "Seçilen günler için saatler eklendi.";
+        TempData["SuccessMessage"] = "Çalışma saatleri başarıyla eklendi.";
         return RedirectToAction("MusaitlikEkle", new { id = model.AntrenorId });
     }
-    
-    // Hata varsa listeyi tekrar doldur
+
+    // Hata varsa listeleri tekrar doldur ve sayfayı göster
     model.MevcutMusaitlikler = await _context.AntrenorMusaitlikleri
         .Where(m => m.AntrenorId == model.AntrenorId)
         .OrderBy(m => m.Gun)
         .ToListAsync();
-        
-    // (Günler zaten modelin içinde geri geliyor, tekrar oluşturmaya gerek yok ama 
-    // eğer null gelirse diye kontrol edebiliriz, şimdilik gerek yok)
-    
-    if (antrenor?.Salon != null)
+
+    if (antrenor.Salon != null)
     {
         ViewBag.SalonBilgisi = $"Salon: {antrenor.Salon.Ad} ({antrenor.Salon.AcilisSaati:hh\\:mm} - {antrenor.Salon.KapanisSaati:hh\\:mm})";
     }

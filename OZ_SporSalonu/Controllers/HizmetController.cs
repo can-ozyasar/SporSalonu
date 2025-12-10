@@ -20,7 +20,7 @@ namespace OZ_SporSalonu.Controllers
             _context = context;
         }
 
-        // GET: Hizmet (Listeleme)
+        
         public async Task<IActionResult> Index()
         {
             var hizmetler = await _context.Hizmetler.ToListAsync();
@@ -37,20 +37,22 @@ namespace OZ_SporSalonu.Controllers
             return View(viewModels);
         }
 
-        // GET: Hizmet/Create (Oluşturma formu)
+        
+
+
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Hizmet/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(HizmetViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // ViewModel'i Modele dönüştür
+                
                 var hizmet = new Hizmet
                 {
                     Ad = viewModel.Ad,
@@ -66,7 +68,8 @@ namespace OZ_SporSalonu.Controllers
             return View(viewModel);
         }
 
-        // GET: Hizmet/Edit/5 (Güncelleme formu)
+
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -74,7 +77,7 @@ namespace OZ_SporSalonu.Controllers
             var hizmet = await _context.Hizmetler.FindAsync(id);
             if (hizmet == null) return NotFound();
 
-            // Model'i ViewModel'e dönüştür
+            
             var viewModel = new HizmetViewModel
             {
                 Id = hizmet.Id,
@@ -87,7 +90,7 @@ namespace OZ_SporSalonu.Controllers
             return View(viewModel);
         }
 
-        // POST: Hizmet/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, HizmetViewModel viewModel)
@@ -123,7 +126,7 @@ namespace OZ_SporSalonu.Controllers
             return View(viewModel);
         }
 
-        // GET: Hizmet/Delete/5 (Silme Onayı)
+        /
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -143,7 +146,7 @@ namespace OZ_SporSalonu.Controllers
             return View(viewModel);
         }
 
-        // POST: Hizmet/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
