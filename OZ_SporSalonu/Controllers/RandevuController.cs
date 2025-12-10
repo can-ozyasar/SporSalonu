@@ -26,6 +26,7 @@ namespace OZ_SporSalonu.Controllers
             _userManager = userManager;
         }
 
+
         // GET: Randevu (Listeleme)
         public async Task<IActionResult> Index()
         {
@@ -66,7 +67,7 @@ namespace OZ_SporSalonu.Controllers
         [Authorize(Roles = "Uye")]
         public async Task<IActionResult> Al(RandevuAlViewModel viewModel)
         {
-            // 1. Hizmet Kontrolü
+            // Hizmet Kontrolü
             var secilenHizmet = await _context.Hizmetler.FindAsync(viewModel.HizmetId);
             if (secilenHizmet == null)
             {
@@ -74,7 +75,7 @@ namespace OZ_SporSalonu.Controllers
                 return await HataIleDon(viewModel);
             }
 
-            // 2. Antrenör Yetkinlik Kontrolü
+            // Antrenör Yetkinlik Kontrolü
             bool antrenorBuHizmetiVeriyorMu = await _context.AntrenorHizmetleri
                 .AnyAsync(ah => ah.AntrenorId == viewModel.AntrenorId && ah.HizmetId == viewModel.HizmetId);
 
@@ -84,7 +85,7 @@ namespace OZ_SporSalonu.Controllers
                 return await HataIleDon(viewModel);
             }
 
-            // 3. Tarih Zaman Ayarlamaları
+            // Tarih Zaman Ayarlamaları
             var localRandevuBaslangic = DateTime.SpecifyKind(viewModel.RandevuBaslangic, DateTimeKind.Local);
             DateTime localRandevuBitis = localRandevuBaslangic.AddMinutes(secilenHizmet.SureDakika);
             
@@ -96,16 +97,17 @@ namespace OZ_SporSalonu.Controllers
         .Include(a => a.Salon)
         .FirstOrDefaultAsync(a => a.Id == viewModel.AntrenorId);
 
-    // 2. Eğer antrenör bir salona bağlıysa kontrol et
+    // Eğer antrenör bir salona bağlıysa kontrol et
     if (antrenorBilgisi != null && antrenorBilgisi.Salon != null)
     {
-        var randevuSaati = localRandevuBaslangic.TimeOfDay;      // Örn: 08:00
-        var randevuBitisSaati = localRandevuBitis.TimeOfDay;     // Örn: 09:00
+        var randevuSaati = localRandevuBaslangic.TimeOfDay;      
+        var randevuBitisSaati = localRandevuBitis.TimeOfDay;   
         
-        var salonAcilis = antrenorBilgisi.Salon.AcilisSaati;     // Örn: 09:00
-        var salonKapanis = antrenorBilgisi.Salon.KapanisSaati;   // Örn: 22:00
+        var salonAcilis = antrenorBilgisi.Salon.AcilisSaati;     
+        var salonKapanis = antrenorBilgisi.Salon.KapanisSaati;   
 
-        // Kontrol: Randevu salon açılmadan önce mi VEYA salon kapandıktan sonra mı bitiyor?
+
+        // Randevu salon açılmadan önce mi VEYA salon kapandıktan sonra mı bitiyor?
         if (randevuSaati < salonAcilis || randevuBitisSaati > salonKapanis)
         {
             ModelState.AddModelError("RandevuBaslangic", 
@@ -117,7 +119,7 @@ namespace OZ_SporSalonu.Controllers
     }
 
 
-            // Müsaitlik (Çalışma Saati) Kontrolü 
+            // Müsaitlik  Kontrolü 
             var istenenGun = localRandevuBaslangic.DayOfWeek;
             var istenenSaat = localRandevuBaslangic.TimeOfDay; 
             var istenenBitisSaat = localRandevuBitis.TimeOfDay;
@@ -139,7 +141,7 @@ namespace OZ_SporSalonu.Controllers
             }
             
 
-            // 4. Zaman Kısıtlamaları
+            // Zaman Kısıtlamaları
             if (utcBaslangic < utcSuAn)
             {
                 ModelState.AddModelError("RandevuBaslangic", "Geçmiş bir tarihe randevu alamazsınız.");
@@ -152,7 +154,7 @@ namespace OZ_SporSalonu.Controllers
                 return await HataIleDon(viewModel);
             }
 
-            // 5. GLOBAL ÇAKIŞMA
+            //  GLOBAL ÇAKIŞMA
             bool antrenorDolu = await _context.Randevular
                 .AnyAsync(r => r.AntrenorId == viewModel.AntrenorId &&
                 r.RedMesaji == null && 
@@ -164,7 +166,7 @@ namespace OZ_SporSalonu.Controllers
                 return await HataIleDon(viewModel);
             }
 
-            // 6. KİŞİSEL ÇAKIŞMA
+            // KİŞİSEL ÇAKIŞMA
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
             bool kullaniciDolu = await _context.Randevular
@@ -178,7 +180,7 @@ namespace OZ_SporSalonu.Controllers
                 return await HataIleDon(viewModel);
             }
 
-            // 7. Kaydetme
+            // Kaydetme
             if (ModelState.IsValid)
             {
                 var randevu = new Randevu
@@ -206,7 +208,9 @@ namespace OZ_SporSalonu.Controllers
             return await HataIleDon(viewModel);
         }
 
-        // POST: Randevu/Iptal/5
+       
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Uye")]
@@ -238,12 +242,13 @@ namespace OZ_SporSalonu.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Yardımcı Metot
+        
+
+
         private async Task<IActionResult> HataIleDon(RandevuAlViewModel viewModel)
         {
             viewModel.HizmetListesi = new SelectList(await _context.Hizmetler.ToListAsync(), "Id", "Ad", viewModel.HizmetId);
             
-            // JavaScript filtrelemesinin çalışması için antrenör verisini tekrar gönderiyoruz
             var antrenorler = await _context.Antrenorler
                 .Include(a => a.AntrenorHizmetleri)
                 .Include(a => a.Salon)

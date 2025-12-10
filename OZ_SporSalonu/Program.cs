@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OZ_SporSalonu.Data;
 using OZ_SporSalonu.Models;
-using OZ_SporSalonu.Services; // Servisleri ekledik
-using Npgsql.EntityFrameworkCore; // PostgreSQL için bu satırı ekleyin
+using OZ_SporSalonu.Services; 
+using Npgsql.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. DbContext ve SQL Server Bağlantısı
+// DbContext ve SQL Server Bağlantısı
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -15,7 +15,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 // 2. Identity (Kimlik Doğrulama) ve Roller
-// IdentityUser yerine bizim ApplicationUser modelimizi kullan
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>() 
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
@@ -24,9 +23,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
-builder.Services.AddRazorPages(); // Identity UI için gerekli
+builder.Services.AddRazorPages(); 
 
-// 3. Yapay Zeka Servisini Kaydet (Dependency Injection)
+
+
+
 builder.Services.AddScoped<IYapayZekaService, GeminiService>(); 
 
 
@@ -45,7 +46,6 @@ using (var scope = app.Services.CreateScope())
     await SeedRolesAndAdminAsync(services);
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -72,7 +72,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages(); // Identity sayfaları için
+app.MapRazorPages(); 
 
 app.Run();
 
@@ -83,9 +83,7 @@ async Task SeedRolesAndAdminAsync(IServiceProvider services)
 
     // YENİ ŞİFREmiz
     string yeniAdminSifresi = "Aa1.123";
-    // ==================================
 
-    // 1. Roller
     string[] roleNames = { "Admin", "Uye" };
     foreach (var roleName in roleNames)
     {
@@ -95,7 +93,7 @@ async Task SeedRolesAndAdminAsync(IServiceProvider services)
         }
     }
 
-    // 2. Admin kullanıcısını oluştur (veya bul)
+    // Admin kullanıcısını oluştur (veya bul)
     var adminUserEmail = "muhammed.ozyasar@ogr.sakarya.edu.tr";
     var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
 

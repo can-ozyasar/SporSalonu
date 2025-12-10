@@ -52,18 +52,31 @@ namespace OZ_SporSalonu.Controllers
             return View(salon);
         }
 
-        // POST: Salon/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        /// POST: Salon/Delete/5
+[HttpPost, ActionName("Delete")]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> DeleteConfirmed(int id)
+{
+    // Salonu, içindeki Antrenörlerle birlikte getir 
+    var salon = await _context.Salonlar
+        .Include(s => s.Antrenorler) 
+        .FirstOrDefaultAsync(s => s.Id == id);
+
+    if (salon != null)
+    {
+        if (salon.Antrenorler != null)
         {
-            var salon = await _context.Salonlar.FindAsync(id);
-            if (salon != null)
+            foreach (var antrenor in salon.Antrenorler)
             {
-                _context.Salonlar.Remove(salon);
-                await _context.SaveChangesAsync();
+                antrenor.SalonId = null; // Antrenör silinmez, sadece salonsuz kalır
             }
-            return RedirectToAction(nameof(Index));
         }
+
+        _context.Salonlar.Remove(salon);
+        await _context.SaveChangesAsync();
+    }
+    
+    return RedirectToAction(nameof(Index));
+}
     }
 }
