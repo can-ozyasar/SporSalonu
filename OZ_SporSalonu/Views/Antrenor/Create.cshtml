@@ -1,0 +1,75 @@
+@model OZ_SporSalonu.ViewModels.AntrenorViewModel
+
+@{
+    ViewData["Title"] = "Yeni Antrenör Ekle";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate__animated animate__fadeInUp">
+                
+                <div class="card-header bg-white border-0 pt-5 pb-0 text-center">
+                    <div class="mb-3">
+                        <span class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="bi bi-person-plus-fill display-6"></i>
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-dark">Eğitmen Kadrosu</h3>
+                    <p class="text-muted small">Ekibe yeni bir uzman antrenör dahil edin.</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" method="post">
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 small"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="AdSoyad" class="form-label fw-bold small text-uppercase text-muted">Eğitmen Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-success"><i class="bi bi-person-vcard-fill"></i></span>
+                                <input asp-for="AdSoyad" class="form-control bg-light border-start-0 ps-0" placeholder="Örn: Ahmet Yılmaz" />
+                            </div>
+                            <span asp-validation-for="AdSoyad" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="UzmanlikAlani" class="form-label fw-bold small text-uppercase text-muted">Uzmanlık Alanı</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-success"><i class="bi bi-patch-check-fill"></i></span>
+                                <select asp-for="UzmanlikAlani" class="form-select bg-light border-start-0 ps-0" asp-items="ViewBag.HizmetListesi">
+                                    <option value="">-- Branş Seçiniz --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="UzmanlikAlani" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="SalonId" class="form-label fw-bold small text-uppercase text-muted">Bağlı Olduğu Şube</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-success"><i class="bi bi-building-fill"></i></span>
+                                <select asp-for="SalonId" class="form-select bg-light border-start-0 ps-0" asp-items="ViewBag.SalonListesi">
+                                    <option value="">-- Şube Seçiniz --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="SalonId" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm text-white">
+                                <i class="bi bi-check-lg me-2"></i> Eğitmeni Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-light text-muted">Vazgeç ve Listeye Dön</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
