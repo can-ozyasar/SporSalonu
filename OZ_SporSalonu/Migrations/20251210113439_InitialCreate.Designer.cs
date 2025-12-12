@@ -12,8 +12,8 @@ using OZ_SporSalonu.Data;
 namespace OZ_SporSalonu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251205131752_AddSalonWorkingHours")]
-    partial class AddSalonWorkingHours
+    [Migration("20251210113439_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

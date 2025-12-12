@@ -126,7 +126,7 @@ namespace OZ_SporSalonu.Controllers
             return View(viewModel);
         }
 
-        /
+        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();

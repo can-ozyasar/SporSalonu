@@ -76,7 +76,9 @@ namespace OZ_SporSalonu.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Ad = table.Column<string>(type: "text", nullable: false),
-                    Adres = table.Column<string>(type: "text", nullable: true)
+                    Adres = table.Column<string>(type: "text", nullable: true),
+                    AcilisSaati = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    KapanisSaati = table.Column<TimeSpan>(type: "interval", nullable: false)
                 },
                 constraints: table =>
                 {
