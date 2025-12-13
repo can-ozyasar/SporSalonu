@@ -1,0 +1,36 @@
+@model OZ_SporSalonu.Models.Salon
+
+@{
+    ViewData["Title"] = "Şube Sil";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Şubeyi Silmek İstiyor musunuz?</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="lead text-center">Bu işlem geri alınamaz ve bu şubeye bağlı antrenörlerin kaydı etkilenebilir.</p>
+                    
+                    <dl class="row mt-4">
+                        <dt class="col-sm-4">Şube Adı:</dt>
+                        <dd class="col-sm-8 fw-bold">@Html.DisplayFor(model => model.Ad)</dd>
+
+                        <dt class="col-sm-4">Adres:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Adres)</dd>
+                    </dl>
+
+                    <form asp-action="Delete" class="d-grid gap-2 mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash-fill"></i> Evet, Şubeyi Sil
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">İptal, Geri Dön</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+@model OZ_SporSalonu.ViewModels.HizmetViewModel
+
+@{
+    ViewData["Title"] = "Hizmet Sil";
+}
+
+<h2>Hizmet Sil</h2>
+<h3 class="text-danger">Bu hizmeti silmek istediğinizden emin misiniz?</h3>
+<hr />
+<div>
+    <h4>Hizmet Bilgileri</h4>
+    <dl class="row">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Ad)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Ad)</dd>
+        
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.SureDakika)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.SureDakika)</dd>
+        
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Ucret)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Ucret)</dd>
+    </dl>
+    
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Evet, Sil" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Hayır, Geri Dön</a>
+    </form>
+</div>

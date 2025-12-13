@@ -1,0 +1,142 @@
+@model OZ_SporSalonu.ViewModels.MusaitlikEkleViewModel
+@{ ViewData["Title"] = "Müsaitlik Ekle"; }
+
+@functions {
+    string GunTurkce(DayOfWeek gun) {
+        return gun switch {
+            DayOfWeek.Monday => "Pazartesi", DayOfWeek.Tuesday => "Salı", DayOfWeek.Wednesday => "Çarşamba",
+            DayOfWeek.Thursday => "Perşembe", DayOfWeek.Friday => "Cuma", DayOfWeek.Saturday => "Cumartesi",
+            DayOfWeek.Sunday => "Pazar", _ => gun.ToString()
+        };
+    }
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Yeni Saat Ekle</h5>
+                </div>
+                <div class="card-body">
+                    
+                    @if (ViewBag.SalonBilgisi != null)
+                    {
+                        <div class="alert alert-info border-0 d-flex align-items-center mb-3 py-2">
+                            <i class="bi bi-info-circle-fill fs-4 me-3 text-primary"></i>
+                            <div class="small">
+                                <strong>Salon Sınırlaması:</strong><br/>@ViewBag.SalonBilgisi
+                            </div>
+                        </div>
+                    }
+
+                    <form asp-action="MusaitlikEkle" method="post">
+                        <input type="hidden" asp-for="AntrenorId" />
+                        <input type="hidden" asp-for="AntrenorAd" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Çalışma Günleri</label>
+                            <div class="card bg-light border-0 p-2">
+                                <div class="row row-cols-2 g-2">
+                                    @for (int i = 0; i < Model.Gunler.Count; i++)
+                                    {
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" asp-for="@Model.Gunler[i].SeciliMi" />
+                                                <label class="form-check-label text-dark" asp-for="@Model.Gunler[i].SeciliMi">
+                                                    @Model.Gunler[i].GunAdi
+                                                </label>
+                                                <input type="hidden" asp-for="@Model.Gunler[i].GunDegeri" />
+                                                <input type="hidden" asp-for="@Model.Gunler[i].GunAdi" />
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label asp-for="Baslangic" class="form-label fw-bold small text-uppercase text-muted">Başlangıç</label>
+                                <input asp-for="Baslangic" type="time" class="form-control" />
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label asp-for="Bitis" class="form-label fw-bold small text-uppercase text-muted">Bitiş</label>
+                                <input asp-for="Bitis" type="time" class="form-control" />
+                            </div>
+                        </div>
+                        <span asp-validation-for="Bitis" class="text-danger d-block mb-3 small"></span>
+                        <span asp-validation-for="Baslangic" class="text-danger d-block mb-3 small"></span>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success fw-bold"><i class="bi bi-check-lg"></i> Saatleri Ekle</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-arrow-left"></i> Listeye Geri Dön
+            </a>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light border-bottom-0 py-3">
+                    <h5 class="mb-0 text-dark"><i class="bi bi-calendar-week text-primary me-2"></i> @Model.AntrenorAd - Çalışma Saatleri</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light text-secondary small text-uppercase">
+                            <tr>
+                                <th class="ps-4">Gün</th>
+                                <th>Saat Aralığı</th>
+                                <th class="text-end pe-4">Sil</th> </tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+    @if (Model.MevcutMusaitlikler != null && Model.MevcutMusaitlikler.Any())
+    {
+        @foreach (var item in Model.MevcutMusaitlikler)
+        {
+            <tr>
+                <td class="ps-4 fw-bold text-dark">@GunTurkce(item.Gun)</td>
+                <td>
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2">
+                        <i class="bi bi-clock me-1"></i>
+                        @item.BaslangicSaati.ToString(@"hh\:mm") - @item.BitisSaati.ToString(@"hh\:mm")
+                    </span>
+                </td>
+                
+                <td class="text-end pe-4">
+                    <form asp-action="MusaitlikSil" method="post" style="display:inline;" onsubmit="return confirm('Bu saati silmek istediğinize emin misiniz?');">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger border-0">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </form>
+                </td>
+                
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="3" class="text-center py-5 text-muted">
+                <i class="bi bi-calendar-x display-4 d-block mb-2 opacity-25"></i>
+                Henüz çalışma saati eklenmemiş.
+            </td>
+        </tr>
+    }
+</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

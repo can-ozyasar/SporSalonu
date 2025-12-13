@@ -1,0 +1,56 @@
+@model IEnumerable<OZ_SporSalonu.Models.Salon>
+@{ ViewData["Title"] = "Salonlar"; }
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary"><i class="bi bi-buildings-fill"></i> Şube Yönetimi</h2>
+            <p class="text-muted">Spor salonu lokasyonlarınızı yönetin.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-success btn-lg shadow-sm rounded-pill px-4">
+            <i class="bi bi-geo-alt-fill"></i> Şube Ekle
+        </a>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var item in Model) {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition-all animate__animated animate__fadeIn">
+                    <div class="card-body text-center pt-5 pb-4">
+                        <div class="mb-3">
+                            <span class="d-inline-block bg-warning bg-opacity-10 text-warning p-4 rounded-circle mb-3">
+                                <i class="bi bi-building display-4"></i>
+                            </span>
+                        </div>
+                        <h4 class="fw-bold text-dark">@item.Ad</h4>
+                        <p class="text-muted mb-4"><i class="bi bi-geo-alt me-1"></i> @item.Adres</p>
+                        
+                        <td>
+                <span class="badge bg-light text-dark border">
+                    <i class="bi bi-clock"></i> @item.AcilisSaati.ToString(@"hh\:mm") - @item.KapanisSaati.ToString(@"hh\:mm")
+                </span>
+            </td>
+
+                        <hr class="border-light my-4">
+                        
+                        <div class="d-flex justify-content-center gap-2">
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger w-100 rounded-pill">
+                                <i class="bi bi-trash me-1"></i> Şubeyi Sil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+    }
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>

@@ -1,0 +1,82 @@
+@model OZ_SporSalonu.ViewModels.HizmetViewModel
+
+@{
+    ViewData["Title"] = "Yeni Hizmet Ekle";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate__animated animate__fadeInUp">
+                
+                <div class="card-header bg-white border-0 pt-5 pb-0 text-center">
+                    <div class="mb-3">
+                        <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="bi bi-lightning-charge-fill display-6"></i>
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-dark">Yeni Hizmet Tanımla</h3>
+                    <p class="text-muted small">Salonunuza yeni bir ders veya aktivite ekleyin.</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" method="post">
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 small"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="Ad" class="form-label fw-bold small text-uppercase text-muted">Hizmet Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-tag-fill"></i></span>
+                                <input asp-for="Ad" class="form-control bg-light border-start-0 ps-0" placeholder="Örn: Pilates, Crossfit..." />
+                            </div>
+                            <span asp-validation-for="Ad" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Aciklama" class="form-label fw-bold small text-uppercase text-muted">Açıklama</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-primary align-items-start pt-2"><i class="bi bi-card-text"></i></span>
+                                <textarea asp-for="Aciklama" class="form-control bg-light border-start-0 ps-0" rows="3" placeholder="Bu hizmetin içeriği hakkında kısa bilgi..."></textarea>
+                            </div>
+                            <span asp-validation-for="Aciklama" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="SureDakika" class="form-label fw-bold small text-uppercase text-muted">Süre (Dakika)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-stopwatch-fill"></i></span>
+                                    <input asp-for="SureDakika" type="number" class="form-control bg-light border-start-0 ps-0" placeholder="45" />
+                                </div>
+                                <span asp-validation-for="SureDakika" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label asp-for="Ucret" class="form-label fw-bold small text-uppercase text-muted">Ücret (₺)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-currency-lira"></i></span>
+                                    <input asp-for="Ucret" type="number" step="0.01" class="form-control bg-light border-start-0 ps-0" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="Ucret" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                <i class="bi bi-check-lg me-2"></i> Hizmeti Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-light text-muted">Vazgeç ve Listeye Dön</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

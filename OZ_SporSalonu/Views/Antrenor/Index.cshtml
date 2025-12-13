@@ -1,0 +1,83 @@
+@model IEnumerable<OZ_SporSalonu.ViewModels.AntrenorViewModel>
+
+@{
+    ViewData["Title"] = "Antrenörlerimiz";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people-fill"></i> Antrenör Kadrosu</h2>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Yeni Ekle</a>
+        }
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="bi bi-person-bounding-box display-1 text-secondary"></i>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">@item.AdSoyad</h5>
+                        <div class="mb-2 text-primary small fw-bold">
+                            <i class="bi bi-geo-alt-fill"></i> @item.SalonAdi
+                        </div>
+                        <p class="card-text text-muted mb-2">
+                            <span class="badge bg-info text-dark">@item.UzmanlikAlani</span>
+                        </p>
+
+                        <div class="card-text text-start bg-light p-2 rounded mb-2 small">
+                            <strong class="d-block border-bottom pb-1 mb-1"><i class="bi bi-clock"></i> Çalışma Saatleri:</strong>
+                            <ul class="list-unstyled mb-0">
+                                @if (item.MusaitlikOzetleri != null && item.MusaitlikOzetleri.Any())
+                                {
+                                    @foreach (var saat in item.MusaitlikOzetleri)
+                                    {
+                                        <li><i class="bi bi-check2 text-success"></i> @saat</li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li class="text-muted fst-italic">Saat belirtilmemiş.</li>
+                                }
+                            </ul>
+                        </div>
+                        <p class="card-text small">Profesyonel destek almak için randevu oluşturun.</p>
+                    </div>
+                    
+                    <div class="card-footer bg-white border-top-0 pb-3">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="btn-group" role="group" aria-label="Admin İşlemleri">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">
+                                    Düzenle
+                                </a>
+
+                                <a asp-action="HizmetAta" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">
+                                    <i class="bi bi-list-check"></i> Uzmanlık
+                                </a>
+                                
+                                <a asp-action="MusaitlikEkle" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">
+                                    <i class="bi bi-clock"></i> Saat
+                                </a>
+                                
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+                                    Sil
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                             <a asp-controller="Randevu" asp-action="Al" class="btn btn-outline-primary w-100">Randevu Al</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

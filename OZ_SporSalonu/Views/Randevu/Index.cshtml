@@ -1,0 +1,144 @@
+@model IEnumerable<OZ_SporSalonu.Models.Randevu>
+
+@{
+    ViewData["Title"] = "Randevularım";
+    var turkceKultur = new System.Globalization.CultureInfo("tr-TR");
+}
+
+<div class="container py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeInDown">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Randevularım</h2>
+            <p class="text-muted mb-0">Planlanmış egzersizlerini buradan takip et ve yönet.</p>
+        </div>
+        <a asp-action="Al" class="btn btn-primary btn-lg shadow-sm rounded-pill px-4 fw-bold">
+            <i class="bi bi-plus-lg me-2"></i> Yeni Randevu
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center animate__animated animate__fadeInDown">
+            <div class="bg-success text-white rounded-circle p-2 me-3"><i class="bi bi-check-lg"></i></div>
+            <div>@TempData["SuccessMessage"]</div>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center animate__animated animate__fadeInDown">
+            <div class="bg-danger text-white rounded-circle p-2 me-3"><i class="bi bi-exclamation-triangle"></i></div>
+            <div>@TempData["ErrorMessage"]</div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 animate__animated animate__fadeIn">
+            <div class="bg-light rounded-circle d-inline-flex p-4 mb-4">
+                <i class="bi bi-calendar-x display-4 text-muted opacity-50"></i>
+            </div>
+            <h4 class="fw-bold text-dark">Henüz bir randevun yok.</h4>
+            <p class="text-muted mb-4">Hemen ilk adımını at ve hedeflerine ulaşmak için bir antrenörle çalışmaya başla!</p>
+            <a asp-action="Al" class="btn btn-outline-primary rounded-pill px-4">Hemen Randevu Al</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                // Duruma göre renk ve ikon belirleme
+                string statusColor = "warning";
+                string statusText = "Onay Bekliyor";
+                string statusIcon = "bi-hourglass-split";
+                string cardBorder = "border-warning";
+
+                if (item.Onaylandi) 
+                { 
+                    statusColor = "success"; 
+                    statusText = "Onaylandı"; 
+                    statusIcon = "bi-check-circle-fill";
+                    cardBorder = "border-success";
+                }
+                else if (!string.IsNullOrEmpty(item.RedMesaji)) 
+                { 
+                    statusColor = "danger"; 
+                    statusText = "İptal Edildi"; 
+                    statusIcon = "bi-x-circle-fill";
+                    cardBorder = "border-danger";
+                }
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden animate__animated animate__fadeInUp hover-lift">
+                        
+                        <div class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0">
+                                    @item.RandevuBaslangic.ToLocalTime().ToString("dd MMMM", turkceKultur)
+                                </h5>
+                                <small class="text-muted fw-bold">
+                                    @item.RandevuBaslangic.ToLocalTime().ToString("dddd", turkceKultur)
+                                </small>
+                            </div>
+                            <span class="badge bg-@statusColor bg-opacity-10 text-@statusColor px-3 py-2 rounded-pill">
+                                <i class="bi @statusIcon me-1"></i> @statusText
+                            </span>
+                        </div>
+
+                        <div class="card-body px-4 py-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-light text-dark rounded-3 px-2 py-1 me-2 fw-bold small">
+                                    <i class="bi bi-clock me-1 text-primary"></i>
+                                    @item.RandevuBaslangic.ToLocalTime().ToString("HH:mm") - 
+                                    @item.RandevuBaslangic.ToLocalTime().AddMinutes(item.KayitliSureDakika).ToString("HH:mm")
+                                </div>
+                                <div class="text-muted small">
+                                    @item.KayitliSureDakika dk
+                                </div>
+                            </div>
+
+                            <h5 class="card-title fw-bold text-primary mb-1">@item.Hizmet.Ad</h5>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-person-badge-fill me-1"></i> @item.Antrenor.AdSoyad
+                            </p>
+
+                            <div class="d-flex align-items-center justify-content-between border-top pt-3 mt-2">
+                                <span class="text-muted small">Ücret</span>
+                                <span class="fw-bold text-dark">@item.KayitliUcret.ToString("C2", turkceKultur)</span>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(item.RedMesaji))
+                            {
+                                <div class="alert alert-danger bg-danger bg-opacity-10 border-0 p-2 mt-3 mb-0 small">
+                                    <strong>İptal Nedeni:</strong> @item.RedMesaji
+                                </div>
+                            }
+                        </div>
+
+                        @if (item.RandevuBaslangic > DateTime.UtcNow && string.IsNullOrEmpty(item.RedMesaji))
+                        {
+                            <div class="card-footer bg-white border-0 px-4 pb-4 pt-0">
+                                <form asp-action="Iptal" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100 rounded-pill">
+                                        <i class="bi bi-trash me-1"></i> İptal Et
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>

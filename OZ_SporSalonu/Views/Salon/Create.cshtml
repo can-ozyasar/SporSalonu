@@ -1,0 +1,39 @@
+@model OZ_SporSalonu.Models.Salon
+@{ ViewData["Title"] = "Salon Ekle"; }
+
+<div class="container mt-4">
+    <h3>Yeni Salon Ekle</h3>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div class="mb-3">
+                    <label asp-for="Ad" class="form-label"></label>
+                    <input asp-for="Ad" class="form-control" placeholder="Örn: Merkez Şube" />
+                    <span asp-validation-for="Ad" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Adres" class="form-label"></label>
+                    <input asp-for="Adres" class="form-control" placeholder="Adres giriniz" />
+                    <span asp-validation-for="Adres" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="AcilisSaati" class="form-label fw-bold"></label>
+        <input asp-for="AcilisSaati" type="time" class="form-control" />
+        <span asp-validation-for="AcilisSaati" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="KapanisSaati" class="form-label fw-bold"></label>
+        <input asp-for="KapanisSaati" type="time" class="form-control" />
+        <span asp-validation-for="KapanisSaati" class="text-danger"></span>
+    </div>
+</div>
+
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+            </form>
+        </div>
+    </div>
+</div>
