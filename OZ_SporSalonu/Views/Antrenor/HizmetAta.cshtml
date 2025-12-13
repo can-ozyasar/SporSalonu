@@ -1,0 +1,47 @@
+@model OZ_SporSalonu.ViewModels.AntrenorHizmetAtaViewModel
+
+@{
+    ViewData["Title"] = "Uzmanlık Ata";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-person-gear"></i> Uzmanlık Yönetimi: @Model.AntrenorAdSoyad</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="HizmetAta" method="post">
+                <input type="hidden" asp-for="AntrenorId" />
+                <input type="hidden" asp-for="AntrenorAdSoyad" />
+
+                <p class="lead">Bu antrenörün verebileceği hizmetleri işaretleyin:</p>
+                <hr />
+
+                <div class="row row-cols-1 row-cols-md-3 g-3">
+                    @for (int i = 0; i < Model.Hizmetler.Count; i++)
+                    {
+                        <div class="col">
+                            <div class="form-check p-3 border rounded bg-light">
+                                <input class="form-check-input" type="checkbox" asp-for="@Model.Hizmetler[i].SeciliMi" />
+                                
+                                <label class="form-check-label fw-bold text-dark ms-2" asp-for="@Model.Hizmetler[i].SeciliMi">
+                                    @Model.Hizmetler[i].HizmetAd
+                                </label>
+
+                                <input type="hidden" asp-for="@Model.Hizmetler[i].HizmetId" />
+                                <input type="hidden" asp-for="@Model.Hizmetler[i].HizmetAd" />
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
