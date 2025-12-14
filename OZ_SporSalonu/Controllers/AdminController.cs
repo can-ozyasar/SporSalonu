@@ -108,7 +108,7 @@ namespace OZ_SporSalonu.Controllers
             var randevu = await _context.Randevular.FindAsync(id);
             if (randevu != null)
             {
-                randevu.Onaylandi = true;
+                randevu.Onaylandi = true; // veri tabanında onaylandı yazar true
                 randevu.RedMesaji = null; 
                 await _context.SaveChangesAsync();
             }

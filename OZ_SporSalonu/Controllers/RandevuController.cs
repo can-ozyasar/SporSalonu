@@ -180,7 +180,9 @@ namespace OZ_SporSalonu.Controllers
                 return await HataIleDon(viewModel);
             }
 
-            // Kaydetme
+
+
+            // Kaydetme işlemleri 
             if (ModelState.IsValid)
             {
                 var randevu = new Randevu

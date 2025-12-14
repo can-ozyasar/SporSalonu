@@ -81,11 +81,12 @@ namespace OZ_SporSalonu.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+
+                // şifre doğrulama işlemi yapıyoruz
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // eğer giriş başarılı ise ana sayfaya yönlendir
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

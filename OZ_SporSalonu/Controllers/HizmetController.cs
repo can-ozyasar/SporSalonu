@@ -34,13 +34,13 @@ namespace OZ_SporSalonu.Controllers
                 Ucret = h.Ucret
             }).ToList();
             
-            return View(viewModels);
+            return View(viewModels); // ViewModel listesini hizmet/index View'a gönderiyoruz ki görüntülenebilsin
         }
 
         
 
 
-        public IActionResult Create()
+        public IActionResult Create() // Ekleme Sayfası hizmet/crate
         {
             return View();
         }
@@ -61,7 +61,7 @@ namespace OZ_SporSalonu.Controllers
                     Ucret = viewModel.Ucret
                 };
 
-                _context.Add(hizmet);
+                _context.Add(hizmet); // formdan aldığımız hizmeti veritabanına ekliyoruz.
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

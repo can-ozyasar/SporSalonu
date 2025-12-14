@@ -10,6 +10,8 @@ namespace OZ_SporSalonu.Controllers
     [Authorize(Roles = "Admin")]
     public class SalonController : Controller
     {
+
+
         private readonly ApplicationDbContext _context;
 
         public SalonController(ApplicationDbContext context)
@@ -17,11 +19,14 @@ namespace OZ_SporSalonu.Controllers
             _context = context;
         }
 
+
+
         // GET: Salon (Listeleme)
         public async Task<IActionResult> Index()
         {
             return View(await _context.Salonlar.ToListAsync());
         }
+
 
         // GET: Salon/Create (Ekleme Sayfası)
         public IActionResult Create()
@@ -29,20 +34,25 @@ namespace OZ_SporSalonu.Controllers
             return View();
         }
 
+
+
         // POST: Salon/Create (Kaydetme)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Salon salon)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) // eğer tüm alanlar doğru girilmişse 
             {
-                _context.Add(salon);
+                _context.Add(salon);     //veritababıba ekliyoruz.
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(salon);
+            return View(salon); // salon modelini geri döndürür create sayfasına
         }
         
+
+
+
         // GET: Salon/Delete/5 (Silme)
         public async Task<IActionResult> Delete(int? id)
         {
@@ -52,31 +62,33 @@ namespace OZ_SporSalonu.Controllers
             return View(salon);
         }
 
+
+
         /// POST: Salon/Delete/5
-[HttpPost, ActionName("Delete")]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> DeleteConfirmed(int id)
-{
-    // Salonu, içindeki Antrenörlerle birlikte getir 
-    var salon = await _context.Salonlar
-        .Include(s => s.Antrenorler) 
-        .FirstOrDefaultAsync(s => s.Id == id);
-
-    if (salon != null)
-    {
-        if (salon.Antrenorler != null)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            foreach (var antrenor in salon.Antrenorler)
-            {
-                antrenor.SalonId = null; // Antrenör silinmez, sadece salonsuz kalır
-            }
-        }
+             // Salonu, içindeki Antrenörlerle birlikte getir 
+             var salon = await _context.Salonlar
+                .Include(s => s.Antrenorler) 
+               .FirstOrDefaultAsync(s => s.Id == id);
 
-        _context.Salonlar.Remove(salon);
-        await _context.SaveChangesAsync();
-    }
+            if (salon != null)
+            {
+                  if (salon.Antrenorler != null)
+                {
+                  foreach (var antrenor in salon.Antrenorler)
+                      {
+                      antrenor.SalonId = null; // Antrenör silinmez, sadece salonsuz kalır
+                  }
+                }
+
+                _context.Salonlar.Remove(salon);
+                  await _context.SaveChangesAsync();
+            }   
     
-    return RedirectToAction(nameof(Index));
-}
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace OZ_SporSalonu.Services
                 
                 var client = new Client(apiKey: _apiKey);
 
-                var prompt = $"Sen bir spor hocasısın. {boy} cm boyunda ve {kilo} kg ağırlığında bir üye için '{hedef}' hedefine yönelik; 1. Egzersiz Tavsiyesi, 2. Beslenme İpucu, 3. Motivasyon Sözü içeren kısa, maddeli bir plan hazırla. Türkçe cevap ver.";
+                var prompt = $"Sen bir spor hocasısın. {boy} cm boyunda ve {kilo} kg ağırlığında bir üye için '{hedef}' hedefine yönelik; 1. Egzersiz Tavsiyesi, 2. Beslenme İpucu,3. Motivasyon Sözü içeren kısa,maddeli bir plan hazırla.Türkçe cevap ver.";
 
                 
                 var response = await client.Models.GenerateContentAsync(

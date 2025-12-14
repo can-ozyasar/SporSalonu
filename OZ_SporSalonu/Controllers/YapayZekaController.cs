@@ -19,11 +19,19 @@ namespace SporSOZ_SporSalonualonu.Controllers
 
 
 
+
+
+
+
         // GET: YapayZeka/OneriAl
         public IActionResult OneriAl()
         {
             return View(new YapayZekaOneriViewModel());
         }
+
+
+
+
 
         // POST: YapayZeka/OneriAl
         [HttpPost]

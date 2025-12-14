@@ -391,8 +391,7 @@ public async Task<IActionResult> MusaitlikEkle(MusaitlikEkleViewModel model)
     {
         foreach (var gunItem in model.Gunler.Where(g => g.SeciliMi))
         {
-            // Veritabanında bu hocanın, bu gün, bu saatler arasında kaydı var mı?
-            
+            // Veritabanında bu hocanın, bu gün, bu saatler arasında dersi varmı diya bakıyoruz          
             bool cakismaVar = await _context.AntrenorMusaitlikleri.AnyAsync(m =>
                 m.AntrenorId == model.AntrenorId &&
                 m.Gun == gunItem.GunDegeri &&
@@ -420,7 +419,7 @@ public async Task<IActionResult> MusaitlikEkle(MusaitlikEkleViewModel model)
             _context.AntrenorMusaitlikleri.Add(musaitlik);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(); // müsaitlik sorunu yoksa kaydeder
         TempData["SuccessMessage"] = "Çalışma saatleri başarıyla eklendi.";
         return RedirectToAction("MusaitlikEkle", new { id = model.AntrenorId });
     }
