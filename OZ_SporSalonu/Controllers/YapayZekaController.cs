@@ -4,6 +4,7 @@ using OZ_SporSalonu.Services;
 using OZ_SporSalonu.ViewModels;
 using System.Threading.Tasks;
 using System;
+using Newtonsoft.Json.Linq; // JSON Parçalama için gerekli
 
 namespace SporSOZ_SporSalonualonu.Controllers
 {
@@ -28,44 +29,38 @@ namespace SporSOZ_SporSalonualonu.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OneriAl(YapayZekaOneriViewModel viewModel)
         {
-            Console.WriteLine("--- CONTROLLER: Butona Basıldı ---");
-            
-            if (!ModelState.IsValid)
+            // Resim kontrolü
+            if (viewModel.YuklenenResim == null || viewModel.YuklenenResim.Length == 0)
             {
-                Console.WriteLine("--- CONTROLLER HATASI: ModelState Geçersiz! ---");
-                // Hataları logla
-                foreach (var item in ModelState)
-                {
-                    foreach (var error in item.Value.Errors)
-                    {
-                        Console.WriteLine($"HATA: {item.Key} - {error.ErrorMessage}");
-                    }
-                }
-                return View(viewModel);
+                ModelState.AddModelError("YuklenenResim", "Lütfen bir fotoğraf yükleyiniz.");
             }
+
+            if (!ModelState.IsValid) return View(viewModel);
 
             try
             {
-                Console.WriteLine("--- CONTROLLER: Servis Çağrılıyor... ---");
                 
-                // Servis çağrısına viewModel.VucutTipi EKLENDİ
-                string oneri = await _yapayZekaService.EgzersizOnerisiAl(
-                    viewModel.Kilo, 
-                    viewModel.Boy, 
-                    viewModel.VucutTipi, 
-                    viewModel.Hedef ?? "Hedef belirtilmedi"); 
-                
-                viewModel.OneriMetni = oneri;
+                using (var stream = viewModel.YuklenenResim.OpenReadStream())
+                {
+                    
+                    string jsonResponse = await _yapayZekaService.EgzersizOnerisiAl(
+                        viewModel.Kilo, 
+                        viewModel.Boy, 
+                        viewModel.VucutTipi, 
+                        viewModel.Hedef,
+                        stream); 
 
-                // Görsel promptu da güncellendi
-                string gorselPrompt = $"Fitness body type {viewModel.VucutTipi}, weight {viewModel.Kilo}kg, height {viewModel.Boy}cm, goal {viewModel.Hedef}, gym workout, cinematic lighting";
-                viewModel.OneriGorselUrl = await _yapayZekaService.GorselOnerisiAl(gorselPrompt);
+                    // Gelen JSON string'i parçala
+                    var jsonObject = JObject.Parse(jsonResponse);
 
+                    viewModel.OneriMetni = jsonObject["tavsiye"]?.ToString();
+                    viewModel.GelecekGorselPromptu = jsonObject["gorsel_prompt"]?.ToString();
+                }
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine($"CONTROLLER KRİTİK HATA: {ex.Message}");
-                ModelState.AddModelError("", $"Hata: {ex.Message}");
+                Console.WriteLine($"CONTROLLER HATASI: {ex.Message}");
+                ModelState.AddModelError("", "Yapay zeka servisinde bir sorun oluştu.");
             }
 
             return View(viewModel);

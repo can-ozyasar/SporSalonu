@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace OZ_SporSalonu.ViewModels
@@ -14,16 +15,21 @@ namespace OZ_SporSalonu.ViewModels
         [Range(100, 250, ErrorMessage = "Geçerli bir boy giriniz.")]
         public int Boy { get; set; }
 
-        // --- YENİ EKLENEN ALAN ---
         [Display(Name = "Vücut Tipi")]
         [Required(ErrorMessage = "Lütfen vücut tipinizi seçiniz.")]
-        public string VucutTipi { get; set; } // Ektomorf, Mezomorf, Endomorf
+        public string VucutTipi { get; set; }
 
         [Display(Name = "Hedefiniz")]
         [Required(ErrorMessage = "Hedef belirtmek zorunludur.")]
-        public string Hedef { get; set; } 
+        public string Hedef { get; set; }
 
+        
+        [Display(Name = "Vücut Fotoğrafınız")]
+        [Required(ErrorMessage = "Analiz için fotoğraf yüklemeniz gerekmektedir.")]
+        public IFormFile YuklenenResim { get; set; }
+
+        
         public string? OneriMetni { get; set; }
-        public string? OneriGorselUrl { get; set; }
+        public string? GelecekGorselPromptu { get; set; } 
     }
 }

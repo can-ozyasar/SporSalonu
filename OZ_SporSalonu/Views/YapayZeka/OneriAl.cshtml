@@ -1,146 +1,79 @@
 @model OZ_SporSalonu.ViewModels.YapayZekaOneriViewModel
 
 @{
-    ViewData["Title"] = "Yapay Zekâ Egzersiz Önerisi";
+    ViewData["Title"] = "AI Vücut Dönüşümü";
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
-    /* --- Vücut Tipi Seçim Kartları İçin Özel CSS --- */
-    .body-type-option {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid #e9ecef;
-    }
-    
-    /* Radio butonu gizle, biz kartı kullanacağız */
-    .btn-check:checked + .body-type-option {
-        border-color: #0d6efd; /* Seçilince Mavi Kenarlık */
-        background-color: #f0f8ff;
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
-    }
-
-    .body-type-option:hover {
-        border-color: #adb5bd;
-    }
-
-    .body-icon {
-        font-size: 2.5rem;
-        color: #6c757d;
-        margin-bottom: 10px;
-    }
-
-    .btn-check:checked + .body-type-option .body-icon {
-        color: #0d6efd;
-    }
-    
-    .ai-content {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        line-height: 1.7;
-    }
-    
-    .ai-content h1, .ai-content h2, .ai-content h3 {
-        color: #198754;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        font-weight: 700;
-        border-bottom: 2px solid #e9ecef;
-        padding-bottom: 0.5rem;
-    }
-    
-    .ai-content strong {
-        color: #0d6efd;
-        font-weight: 700;
-    }
-    
-    .ai-content ul {
-        padding-left: 1.2rem;
-        list-style-type: none; 
-    }
-    .ai-content ul li {
-        margin-bottom: 0.5rem;
-        position: relative;
-        padding-left: 1.5rem;
-    }
-    
-    .ai-content ul li::before {
-        content: "✓"; 
-        color: #198754;
-        font-weight: bold;
-        position: absolute;
-        left: 0;
-    }
+    .body-type-option { cursor: pointer; transition: all 0.3s ease; border: 2px solid #e9ecef; }
+    .btn-check:checked + .body-type-option { border-color: #0d6efd; background-color: #f0f8ff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2); }
+    .body-icon { font-size: 2.5rem; color: #6c757d; margin-bottom: 10px; }
+    .btn-check:checked + .body-type-option .body-icon { color: #0d6efd; }
+    .ai-content { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; }
+    .ai-content h1, .ai-content h2, .ai-content h3 { color: #198754; margin-top: 1.5rem; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem; }
+    .ai-content strong { color: #0d6efd; }
+    .border-dashed { border-style: dashed !important; border-width: 2px !important; }
 </style>
 
 <div class="container mt-4">
     <div class="text-center mb-5 animate__animated animate__fadeInDown">
-        <h2 class="display-6 fw-bold text-primary"><i class="bi bi-robot"></i> AI Fitness Koçu</h2>
-        <p class="text-muted lead">Vücut tipini analiz edelim ve sana en uygun rotayı çizelim.</p>
+        <h2 class="display-6 fw-bold text-primary"><i class="bi bi-magic"></i> AI Vücut Simülasyonu</h2>
+        <p class="text-muted lead">Fotoğrafını yükle, hedefini seç, gelecekteki değişimini gör.</p>
     </div>
 
-    <div class="row justify-content-center">
+    <div class="row g-4 justify-content-center">
         
-        @* --- SOL TARAFI: FORM --- *@
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-5">
             <div class="card shadow-lg border-0 h-100 animate__animated animate__fadeInLeft">
                 <div class="card-header bg-primary text-white py-3">
-                    <h5 class="card-title mb-0"><i class="bi bi-sliders"></i> Fiziksel Analiz</h5>
+                    <h5 class="card-title mb-0"><i class="bi bi-person-bounding-box"></i> Veri ve Fotoğraf</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form asp-action="OneriAl" method="post" id="aiForm">
+                    <form asp-action="OneriAl" method="post" enctype="multipart/form-data" id="aiForm">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
 
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label asp-for="Kilo" class="form-label fw-bold small text-muted">KİLO (KG)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-speedometer2 text-primary"></i></span>
-                                    <input asp-for="Kilo" class="form-control bg-light border-start-0 ps-0" type="number" placeholder="70" />
-                                </div>
+                                <input asp-for="Kilo" class="form-control" type="number" placeholder="70" />
                                 <span asp-validation-for="Kilo" class="text-danger small"></span>
                             </div>
-
                             <div class="col-6">
                                 <label asp-for="Boy" class="form-label fw-bold small text-muted">BOY (CM)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-rulers text-primary"></i></span>
-                                    <input asp-for="Boy" class="form-control bg-light border-start-0 ps-0" type="number" placeholder="175" />
-                                </div>
+                                <input asp-for="Boy" class="form-control" type="number" placeholder="175" />
                                 <span asp-validation-for="Boy" class="text-danger small"></span>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-bold small text-muted d-block mb-2">VÜCUT TİPİNİZ</label>
-                            
                             <div class="row g-2">
                                 <div class="col-4">
                                     <input type="radio" class="btn-check" name="VucutTipi" id="type1" value="Ektomorf" @(Model?.VucutTipi == "Ektomorf" ? "checked" : "") required>
                                     <label class="card body-type-option h-100 text-center py-3" for="type1">
                                         <div class="body-icon"><i class="bi bi-person"></i></div>
                                         <div class="fw-bold small">Ektomorf</div>
-                                        <div class="text-muted x-small" style="font-size:10px;">İnce & Zor Kilo Alan</div>
+                                        <div class="text-muted x-small" style="font-size:10px;">İnce</div>
                                     </label>
                                 </div>
-
                                 <div class="col-4">
                                     <input type="radio" class="btn-check" name="VucutTipi" id="type2" value="Mezomorf" @(Model?.VucutTipi == "Mezomorf" ? "checked" : "")>
                                     <label class="card body-type-option h-100 text-center py-3" for="type2">
                                         <div class="body-icon"><i class="bi bi-person-standing"></i></div>
                                         <div class="fw-bold small">Mezomorf</div>
-                                        <div class="text-muted x-small" style="font-size:10px;">Atletik & Kaslı</div>
+                                        <div class="text-muted x-small" style="font-size:10px;">Atletik</div>
                                     </label>
                                 </div>
-
                                 <div class="col-4">
                                     <input type="radio" class="btn-check" name="VucutTipi" id="type3" value="Endomorf" @(Model?.VucutTipi == "Endomorf" ? "checked" : "")>
                                     <label class="card body-type-option h-100 text-center py-3" for="type3">
                                         <div class="body-icon"><i class="bi bi-person-bounding-box"></i></div>
                                         <div class="fw-bold small">Endomorf</div>
-                                        <div class="text-muted x-small" style="font-size:10px;">Geniş & Çabuk Yağlanan</div>
+                                        <div class="text-muted x-small" style="font-size:10px;">Geniş</div>
                                     </label>
                                 </div>
                             </div>
@@ -149,16 +82,23 @@
 
                         <div class="mb-4">
                             <label asp-for="Hedef" class="form-label fw-bold small text-muted">HEDEFİNİZ</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0 pt-2 align-items-start"><i class="bi bi-bullseye text-danger"></i></span>
-                                <textarea asp-for="Hedef" class="form-control bg-light border-start-0 ps-0" rows="3" placeholder="Örn: Göbek yağlarını eritip omuzları genişletmek istiyorum..."></textarea>
-                            </div>
+                            <textarea asp-for="Hedef" class="form-control" rows="2" placeholder="Örn: Omuzları genişletmek, karın kası..."></textarea>
                             <span asp-validation-for="Hedef" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-primary">BOYDAN FOTOĞRAF (Zorunlu)</label>
+                            <div class="p-3 border-dashed rounded-3 bg-light text-center">
+                                <i class="bi bi-cloud-arrow-up display-5 text-muted opacity-50"></i>
+                                <input asp-for="YuklenenResim" type="file" class="form-control mt-2" accept="image/*" required>
+                                <small class="text-muted d-block mt-1">Analiz ve simülasyon için gereklidir.</small>
+                            </div>
+                             <span asp-validation-for="YuklenenResim" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm" id="btnSubmit">
-                                <i class="bi bi-stars me-2"></i> Yapay Zekaya Sor
+                                <i class="bi bi-stars me-2"></i> Analiz Et ve Simüle Et
                             </button>
                         </div>
                     </form>
@@ -166,51 +106,60 @@
             </div>
         </div>
 
-        @* --- SAĞ TARAFI: SONUÇ --- *@
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             
-            @* Yükleniyor Animasyonu *@
             <div id="loadingSpinner" class="text-center d-none mt-5">
-                <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <h5 class="mt-4 text-dark fw-bold animate__animated animate__pulse animate__infinite">Veriler Analiz Ediliyor...</h5>
-                <p class="text-muted small">Gemini, vücut tipinize en uygun rotayı hesaplıyor.</p>
+                <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                <h5 class="mt-4 text-dark fw-bold animate__animated animate__pulse animate__infinite">Gelecek Simülasyonu Hazırlanıyor...</h5>
+                <p class="text-muted small">Gemini fotoğrafınızı işliyor ve dönüşümünüzü hesaplıyor.</p>
             </div>
 
-            @* Sonuç Kartı *@
             @if (!string.IsNullOrEmpty(Model.OneriMetni))
             {
-                <div class="card shadow-lg border-0 border-top border-4 border-success animate__animated animate__fadeInRight">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="bg-success text-white rounded-circle p-3 me-3 shadow-sm">
-                                <i class="bi bi-clipboard2-pulse-fill fs-4"></i>
+                <div class="animate__animated animate__fadeInRight">
+                    
+                    @if (!string.IsNullOrEmpty(Model.GelecekGorselPromptu))
+                    {
+                        <div class="card shadow-lg border-0 rounded-4 mb-4 overflow-hidden">
+                            <div class="card-header bg-warning text-dark fw-bold border-0">
+                                <i class="bi bi-image-fill me-2"></i> Hedeflenen Vücut Formu (Simülasyon)
                             </div>
-                            <div>
-                                <h4 class="mb-0 fw-bold text-success">Size Özel Plan Hazır!</h4>
-                                <span class="badge bg-light text-dark border mt-1">
-                                    <i class="bi bi-person me-1"></i> @Model.VucutTipi
-                                </span>
+                            <div class="card-body p-0 bg-light text-center">
+                                <img src="https://image.pollinations.ai/prompt/@System.Net.WebUtility.UrlEncode(Model.GelecekGorselPromptu)?width=800&height=500&nologo=true&model=flux" 
+                                     class="img-fluid w-100" 
+                                     style="min-height: 300px; object-fit: cover;"
+                                     alt="Gelecek Simülasyonu"
+                                     onerror="this.src='https://via.placeholder.com/800x400?text=Simulasyon+Hata'"/>
+                            </div>
+                            <div class="card-footer bg-white border-0 p-3">
+                                <small class="text-muted fst-italic"><i class="bi bi-info-circle"></i> Bu görsel, yapay zeka tarafından hedeflerinize ulaştığınızda nasıl görünebileceğinizi simüle etmek için üretilmiştir.</small>
                             </div>
                         </div>
-                        
-                        <hr class="my-4 opacity-25" />
-                        
-                        <div id="formattedContent" class="ai-content text-dark"></div>
+                    }
+
+                    <div class="card shadow-lg border-0 border-top border-4 border-success">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-success text-white rounded-circle p-3 me-3 shadow-sm">
+                                    <i class="bi bi-file-earmark-medical-fill fs-4"></i>
+                                </div>
+                                <h4 class="mb-0 fw-bold text-success">Antrenman ve Beslenme Planı</h4>
+                            </div>
+                            <hr class="my-4 opacity-25" />
+                            <div id="formattedContent" class="ai-content text-dark"></div>
+                        </div>
                     </div>
                 </div>
             }
             else if (ViewContext.ModelState.IsValid)
             {
-                @* Boş Durum (Placeholder) *@
                 <div class="card border-0 bg-light bg-opacity-50 text-center py-5 rounded-4 h-100 d-flex align-items-center justify-content-center" id="welcomeCard">
                     <div class="card-body">
                         <div class="mb-4">
-                            <i class="bi bi-cpu display-1 text-primary opacity-25"></i>
+                            <i class="bi bi-camera-reels display-1 text-primary opacity-25"></i>
                         </div>
                         <h4 class="text-dark fw-bold">Sonuçlar Burada Görünecek</h4>
-                        <p class="text-muted px-4">Sol taraftaki formu doldurun, yapay zeka metabolizmanıza ve hedeflerinize uygun en iyi stratejiyi belirlesin.</p>
+                        <p class="text-muted px-4">Fotoğraf yükleyin, bilgilerinizi girin ve değişimi görün.</p>
                     </div>
                 </div>
             }
@@ -220,30 +169,21 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Markdown Dönüştürme
             var rawAiText = @Html.Raw(Json.Serialize(Model.OneriMetni));
             var targetDiv = document.getElementById("formattedContent");
 
             if (rawAiText && targetDiv) {
-                try {
-                    marked.use({ breaks: true, gfm: true });
-                    targetDiv.innerHTML = marked.parse(rawAiText);
-                } catch (e) {
-                    targetDiv.innerText = rawAiText; 
-                }
+                targetDiv.innerHTML = marked.parse(rawAiText);
             }
         });
 
-        // Buton Animasyonu ve Spinner
         document.getElementById("aiForm").addEventListener("submit", function() {
             if ($(this).valid()) {
                 var btn = document.getElementById("btnSubmit");
                 btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analiz Ediliyor...';
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> İşleniyor...';
                 
                 var welcome = document.getElementById("welcomeCard");
                 if(welcome) welcome.style.display = 'none';
