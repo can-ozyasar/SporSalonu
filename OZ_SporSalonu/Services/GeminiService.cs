@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic; // List<> için gerekli
+using System.Collections.Generic;
 using Google.GenAI;
 using Google.GenAI.Types;
 
@@ -16,7 +16,8 @@ namespace OZ_SporSalonu.Services
             _apiKey = configuration["Gemini:ApiKey"];
         }
 
-        public async Task<string> EgzersizOnerisiAl(int kilo, int boy, string hedef)
+        // İmza güncellendi: vucutTipi eklendi
+        public async Task<string> EgzersizOnerisiAl(int kilo, int boy, string vucutTipi, string hedef)
         {
             if (string.IsNullOrEmpty(_apiKey) || _apiKey.Contains("BURAYA"))
             {
@@ -25,14 +26,25 @@ namespace OZ_SporSalonu.Services
 
             try
             {
-                
                 var client = new Client(apiKey: _apiKey);
 
-                var prompt = $"Sen bir spor hocasısın. {boy} cm boyunda ve {kilo} kg ağırlığında bir üye için '{hedef}' hedefine yönelik; 1. Egzersiz Tavsiyesi, 2. Beslenme İpucu,3. Motivasyon Sözü içeren kısa,maddeli bir plan hazırla.Türkçe cevap ver.";
+                // Prompt güncellendi: Vücut tipi ve metabolik özellik vurgusu yapıldı
+                var prompt = $@"
+                    Sen uzman bir spor koçu ve diyetisyensin.
+                    Danışan Bilgileri:
+                    - Boy: {boy} cm
+                    - Kilo: {kilo} kg
+                    - Vücut Tipi: {vucutTipi} (Lütfen bu vücut tipinin metabolizma hızını ve kas yapısını dikkate al)
+                    - Hedef: {hedef}
 
-                
+                    Bu bilgilere göre;
+                    1. Vücut Tipine Uygun Egzersiz Stratejisi
+                    2. Beslenme Tavsiyeleri (Makro besin dağılımı ipuçları)
+                    3. Motivasyon Sözü
+                    içeren, Markdown formatında, samimi ama profesyonel bir plan hazırla. Türkçe cevap ver.";
+
                 var response = await client.Models.GenerateContentAsync(
-                    model: "gemini-2.5-flash",
+                    model: "gemini-2.5-flash", // Daha güncel model varsa onu kullanabilirsiniz
                     contents: new List<Content> 
                     { 
                         new Content 
@@ -60,7 +72,8 @@ namespace OZ_SporSalonu.Services
 
         public Task<string> GorselOnerisiAl(string prompt)
         {
-            return Task.FromResult("https://via.placeholder.com/400x300.png?text=AI+Onerisi");
+            // Şimdilik placeholder dönüyor
+            return Task.FromResult("https://via.placeholder.com/400x300.png?text=AI+Fitness");
         }
     }
 }
