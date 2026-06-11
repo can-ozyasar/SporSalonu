@@ -2,18 +2,32 @@
 
 Spor salonu yönetimi veya tanıtımı için hazırlanmış .NET/HTML tabanlı uygulama.
 
-## Öne Çıkanlar
+## Bu Repo Ne İçin Var?
+Spor salonu senaryosu üzerinden web uygulaması ve temel yönetim ekranları geliştirme pratiği yapmak için oluşturuldu.
+
+Bu README'nin amacı; repoya ilk kez gelen birinin projenin neden açıldığını, içinde ne bulunduğunu ve nereden başlaması gerektiğini hızlıca anlamasını sağlamaktır.
+
+## İçerik ve Kapsam
+Bu repoda öne çıkan içerikler şunlardır:
 - .NET proje dosyası bulunan web uygulaması
 - Spor salonu senaryosuna odaklı içerik
 - Eğitim/proje teslimi için okunabilir yapı
-- Kullanılan ana teknolojiler: HTML, .NET, C#, CSS
+- .NET solution/proje dosyaları ve katmanlı uygulama yapısı
+
+## Kimler İçin Faydalı?
+Tam yığın uygulama mimarisini, modül ayrımını veya servis-UI ilişkisini incelemek isteyenler için uygundur.
+
+## Kullanılan Teknolojiler
+- HTML
+- .NET
+- C#
+- CSS
 
 ## Önemli Dosyalar
 - `OZ_SporSalonu/OZ_SporSalonu.csproj`
 
 ## Proje Yapısı
 - `OZ_SporSalonu` - 85 dosya
-- `README.md` - 1 dosya
 - `hesaplar.txt` - 1 dosya
 
 ## Geliştirme Notları
